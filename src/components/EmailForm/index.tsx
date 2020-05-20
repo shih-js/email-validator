@@ -1,0 +1,114 @@
+import React, { useRef, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+	handleInputValue,
+	toggleLoading,
+	updateResponse,
+	updateSelection,
+	selectEmail,
+	validateEmailAsync,
+} from './emailSlice';
+
+import Results from './Results';
+import Autocomplete from './Autocomplete';
+
+const EmailForm: React.FC = () => {
+	const inputRef = useRef<HTMLInputElement>(null);
+	const emailState = useSelector(selectEmail);
+	const {
+		inputValue = '',
+		isLoading,
+		selection = 0,
+		showAutocomplete,
+		matches = [],
+		username,
+	} = emailState;
+	const dispatch = useDispatch();
+
+	// Focus on input when component loads.
+	useEffect(() => {
+		inputRef?.current?.focus();
+	}, []);
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		let emailResponse: any = {};
+
+		dispatch(toggleLoading());
+
+		if (showAutocomplete) {
+			dispatch(
+				handleInputValue({
+					inputValue: `${username}@${matches[selection - 1]}`,
+				})
+			);
+			emailResponse = await dispatch(
+				validateEmailAsync(`${username}@${matches[selection - 1]}`)
+			);
+		} else {
+			emailResponse = await dispatch(validateEmailAsync(inputValue));
+		}
+
+		const { reason, didYouMean } = emailResponse.payload;
+		dispatch(updateResponse({ reason, didYouMean }));
+		dispatch(toggleLoading());
+	};
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		dispatch(handleInputValue({ inputValue: e.currentTarget.value }));
+	};
+
+	const handleSelection = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		const { key } = e;
+		const isKeyDown = key === 'ArrowDown';
+		const isKeyUp = key === 'ArrowUp';
+
+		// If the key pressed isnt down or up.
+		// Immediately exit function
+		if (!isKeyDown && !isKeyUp) return;
+
+		const MIN = 1;
+		const MAX = matches?.length || 1;
+
+		if (showAutocomplete) {
+			if (isKeyDown && selection < MAX) {
+				dispatch(
+					updateSelection({
+						move: 1,
+					})
+				);
+			} else if (isKeyUp && selection > MIN) {
+				dispatch(
+					updateSelection({
+						move: -1,
+					})
+				);
+			}
+		} else {
+			dispatch(
+				updateSelection({
+					reset: true,
+				})
+			);
+		}
+	};
+
+	return (
+		<form onSubmit={(e) => handleSubmit(e)}>
+			<Results />
+			<input
+				ref={inputRef}
+				type="text"
+				placeholder="email"
+				value={inputValue}
+				onChange={(e) => handleChange(e)}
+				onKeyDown={(e) => handleSelection(e)}
+			/>
+			<span className="fade-out" />
+			<button type="submit">{isLoading ? '...' : 'submit'}</button>
+			<Autocomplete />
+		</form>
+	);
+};
+
+export default EmailForm;
