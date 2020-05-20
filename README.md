@@ -1,6 +1,7 @@
 # Get Started
 
 `yarn install && yarn start`
+Visit http://localhost:3000 to begin.
 
 # Notes
 

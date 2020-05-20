@@ -2,7 +2,6 @@ import styled, { createGlobalStyle } from 'styled-components';
 
 export const cssVar = {
 	primary: '#FF5722',
-	secondary: '',
 	background: '#E9EBEE',
 	text: '#3C382E',
 	error: '#F30F0F',
@@ -119,7 +118,6 @@ export const GlobalStyle = createGlobalStyle`
 			.did-you-mean {
 				text-transform: none;
 				transform: translate3d(0, 8rem, 0);
-				color: ${cssVar.text};
 				&:hover { cursor: pointer; }
 			}
 		}
