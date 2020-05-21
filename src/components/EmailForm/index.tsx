@@ -16,14 +16,7 @@ import Autocomplete from './Autocomplete';
 const EmailForm: React.FC = () => {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const emailState = useSelector(selectEmail);
-	const {
-		inputValue = '',
-		isLoading,
-		selection = 0,
-		showAutocomplete,
-		matches = [],
-		username,
-	} = emailState;
+	const { inputValue, isLoading, selection, showAutocomplete, matches, username } = emailState;
 	const dispatch = useDispatch();
 
 	// Autofocus on input when component loads.
@@ -31,6 +24,8 @@ const EmailForm: React.FC = () => {
 		inputRef?.current?.focus();
 	}, []);
 
+	// Handles logic for loading, autocompletion and
+	// validation when user submits the form.
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		let emailResponse: any = {};
@@ -51,10 +46,13 @@ const EmailForm: React.FC = () => {
 		dispatch(toggleLoading());
 	};
 
+	// Updates the text value as the user types inside input element.
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		dispatch(handleInputValue({ inputValue: e.currentTarget.value }));
 	};
 
+	// Handles selection of autocomplete items
+	// when user uses the up and down arrow
 	const handleSelection = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		const { key } = e;
 		const isKeyDown = key === 'ArrowDown';
@@ -69,24 +67,12 @@ const EmailForm: React.FC = () => {
 
 		if (showAutocomplete) {
 			if (isKeyDown && selection < MAX) {
-				dispatch(
-					updateSelection({
-						move: 1,
-					})
-				);
+				dispatch(updateSelection({ move: 1 }));
 			} else if (isKeyUp && selection > MIN) {
-				dispatch(
-					updateSelection({
-						move: -1,
-					})
-				);
+				dispatch(updateSelection({ move: -1 }));
 			}
 		} else {
-			dispatch(
-				updateSelection({
-					reset: true,
-				})
-			);
+			dispatch(updateSelection({ move: 0, reset: true }));
 		}
 	};
 

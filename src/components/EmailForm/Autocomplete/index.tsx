@@ -17,7 +17,7 @@ const Autocomplete: React.FC = () => {
 						key={index}
 						onClick={(e) => {
 							const inputValue = `${username + e.currentTarget.innerText}`;
-							dispatch(handleInputValue({ inputValue, showAutocomplete: false }));
+							dispatch(handleInputValue({ inputValue }));
 						}}
 						className={isSelected ? 'selected' : ''}
 					>

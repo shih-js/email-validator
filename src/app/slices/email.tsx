@@ -2,17 +2,17 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
 interface IEmailState {
-	inputValue?: string;
-	reason?: string | null;
-	didYouMean?: string | null;
-	showResults?: boolean;
-	showAutocomplete?: boolean;
-	matches?: string[] | undefined;
-	username?: string;
-	domain?: string;
-	isLoading?: boolean;
-	suggestions?: string[] | undefined;
-	selection?: number;
+	inputValue: string;
+	reason: string;
+	didYouMean: string;
+	showResults: boolean;
+	showAutocomplete: boolean;
+	matches: string[];
+	username: string;
+	domain: string;
+	isLoading: boolean;
+	suggestions: string[];
+	selection: number;
 }
 
 const initialState: IEmailState = {
@@ -33,7 +33,7 @@ export const emailSlice = createSlice({
 	name: 'email',
 	initialState,
 	reducers: {
-		handleInputValue: (state, action) => {
+		handleInputValue: (state, action: PayloadAction<{ inputValue: string }>) => {
 			const { inputValue } = action.payload;
 
 			state.username = inputValue.split('@')[0];
@@ -68,7 +68,7 @@ export const emailSlice = createSlice({
 			state.didYouMean = didYouMean;
 			state.showResults = true;
 		},
-		updateSelection: (state, action) => {
+		updateSelection: (state, action: PayloadAction<{ move: number; reset?: boolean }>) => {
 			const { move, reset } = action.payload;
 			reset ? (state.selection = 0) : (state.selection += move);
 		},

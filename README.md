@@ -5,5 +5,5 @@
 # Notes
 
 -   This application uses the kickbox API which is only limited to 100 requests per key.
--   Use test key while in development.
--   To use production key, uncomment line 17 in ~/server/index.tsx
+-   If 100 request limit exceeded, fallback to development key by uncommenting line 16 in ~/server/index.tsx
+-   To use production key, make sure line 17 is uncommented in ~/server/index.tsx
