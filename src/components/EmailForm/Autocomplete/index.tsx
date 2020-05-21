@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { handleInputValue, selectEmail } from '../emailSlice';
+import { handleInputValue, selectEmail } from '../../../app/slices/email';
 
 const Autocomplete: React.FC = () => {
 	const emailState = useSelector(selectEmail);
@@ -10,20 +10,16 @@ const Autocomplete: React.FC = () => {
 	return (
 		<ul className={`auto-complete ${showAutocomplete ? 'visible' : ''}`}>
 			{matches.map((match: string, index: number) => {
-				const selected = selection === index + 1 ? true : false;
+				const isSelected = selection === index + 1 ? true : false;
 
 				return (
 					<li
 						key={index}
 						onClick={(e) => {
-							dispatch(
-								handleInputValue({
-									inputValue: `${username + e.currentTarget.innerText}`,
-									showAutocomplete: false,
-								})
-							);
+							const inputValue = `${username + e.currentTarget.innerText}`;
+							dispatch(handleInputValue({ inputValue, showAutocomplete: false }));
 						}}
-						className={selected ? 'selected' : ''}
+						className={isSelected ? 'selected' : ''}
 					>
 						{`@${match}`}
 					</li>

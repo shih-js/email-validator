@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { handleInputValue, selectEmail } from '../emailSlice';
+import { handleInputValue, selectEmail } from '../../../app/slices/email';
 
 const Result: React.FC = () => {
 	const emailState = useSelector(selectEmail);

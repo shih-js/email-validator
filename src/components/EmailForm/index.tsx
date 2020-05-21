@@ -7,8 +7,9 @@ import {
 	updateSelection,
 	selectEmail,
 	validateEmailAsync,
-} from './emailSlice';
+} from '../../app/slices/email';
 
+import { StyledForm } from './style';
 import Results from './Results';
 import Autocomplete from './Autocomplete';
 
@@ -25,7 +26,7 @@ const EmailForm: React.FC = () => {
 	} = emailState;
 	const dispatch = useDispatch();
 
-	// Focus on input when component loads.
+	// Autofocus on input when component loads.
 	useEffect(() => {
 		inputRef?.current?.focus();
 	}, []);
@@ -33,21 +34,17 @@ const EmailForm: React.FC = () => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		let emailResponse: any = {};
-
-		dispatch(toggleLoading());
+		let emailValue: string = '';
 
 		if (showAutocomplete) {
-			dispatch(
-				handleInputValue({
-					inputValue: `${username}@${matches[selection - 1]}`,
-				})
-			);
-			emailResponse = await dispatch(
-				validateEmailAsync(`${username}@${matches[selection - 1]}`)
-			);
+			emailValue = `${username}@${matches[selection - 1]}`;
+			dispatch(handleInputValue({ inputValue: emailValue }));
 		} else {
-			emailResponse = await dispatch(validateEmailAsync(inputValue));
+			emailValue = inputValue;
 		}
+
+		dispatch(toggleLoading());
+		emailResponse = await dispatch(validateEmailAsync(emailValue));
 
 		const { reason, didYouMean } = emailResponse.payload;
 		dispatch(updateResponse({ reason, didYouMean }));
@@ -94,7 +91,7 @@ const EmailForm: React.FC = () => {
 	};
 
 	return (
-		<form onSubmit={(e) => handleSubmit(e)}>
+		<StyledForm onSubmit={(e) => handleSubmit(e)}>
 			<Results />
 			<input
 				ref={inputRef}
@@ -104,10 +101,9 @@ const EmailForm: React.FC = () => {
 				onChange={(e) => handleChange(e)}
 				onKeyDown={(e) => handleSelection(e)}
 			/>
-			<span className="fade-out" />
 			<button type="submit">{isLoading ? '...' : 'submit'}</button>
 			<Autocomplete />
-		</form>
+		</StyledForm>
 	);
 };
 

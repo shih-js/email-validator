@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import emailReducer from '../components/EmailForm/emailSlice';
+import emailReducer from './slices/email';
 
 export const store = configureStore({
 	reducer: {
